@@ -1,0 +1,1947 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Sofa Sofi Studio — Content AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;900&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+:root {
+  --bg:       #080810;
+  --s1:       #0f0f1a;
+  --s2:       #161625;
+  --s3:       #1e1e30;
+  --border:   rgba(255,255,255,0.07);
+  --border2:  rgba(255,255,255,0.12);
+  --text:     #eeeef5;
+  --muted:    rgba(238,238,245,0.4);
+  --muted2:   rgba(238,238,245,0.65);
+  --a1: #F5E642; /* kuning logo */
+  --a2: #7ED321; /* hijau lime logo */
+  --a3: #A8E63D; /* hijau muda logo */
+  --a4: #5BA800; /* hijau tua logo */
+  --a5: #C8F135; /* hijau terang */
+  --r: 14px;
+  --r2: 10px;
+  --fh: 'Unbounded', sans-serif;
+  --fb: 'Plus Jakarta Sans', sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--fb);
+  font-size:14px;
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* BG MESH */
+body::before{
+  content:'';
+  position:fixed;
+  inset:0;
+  background:
+    radial-gradient(ellipse 60% 40% at 10% 20%, rgba(245,230,66,0.07) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 50% at 90% 80%, rgba(126,211,33,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 60% at 50% 50%, rgba(168,230,61,0.04) 0%, transparent 70%);
+  pointer-events:none;
+  z-index:0;
+}
+
+/* HEADER */
+.header{
+  position:sticky;top:0;z-index:200;
+  background:rgba(8,8,16,0.88);
+  backdrop-filter:blur(24px);
+  border-bottom:1px solid var(--border);
+  padding:12px 18px;
+  display:flex;align-items:center;gap:12px;
+}
+.logo{
+  width:38px;height:38px;border-radius:11px;
+  background:linear-gradient(135deg,var(--a1),var(--a2));
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;flex-shrink:0;
+  box-shadow:0 4px 20px rgba(245,230,66,0.3);
+}
+.logo-info{flex:1;}
+.logo-name{
+  font-family:var(--fh);font-size:13px;font-weight:700;
+  background:linear-gradient(90deg,#F5E642,#7ED321);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.logo-sub{font-size:10px;color:var(--muted);margin-top:1px;}
+.status-pill{
+  display:flex;align-items:center;gap:5px;
+  padding:5px 10px;border-radius:20px;
+  background:var(--s2);border:1px solid var(--border2);
+  font-size:11px;font-weight:600;color:var(--muted2);
+  cursor:pointer;
+}
+.status-dot{width:6px;height:6px;border-radius:50%;background:#666;transition:background 0.3s;}
+.status-dot.active{background:var(--a5);box-shadow:0 0 6px var(--a5);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.5;}}
+
+/* NAV */
+.nav{
+  display:flex;gap:4px;
+  padding:12px 18px 0;
+  overflow-x:auto;scrollbar-width:none;
+}
+.nav::-webkit-scrollbar{display:none;}
+.nav-btn{
+  flex-shrink:0;
+  display:flex;align-items:center;gap:6px;
+  padding:8px 14px;border-radius:20px;
+  border:1px solid var(--border);
+  background:transparent;
+  color:var(--muted);
+  font-family:var(--fb);font-size:12px;font-weight:600;
+  cursor:pointer;transition:all 0.2s;white-space:nowrap;
+}
+.nav-btn .nav-icon{font-size:14px;}
+.nav-btn.active{
+  background:var(--s2);
+  border-color:var(--border2);
+  color:var(--text);
+}
+.nav-btn.active .nav-num{
+  width:18px;height:18px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:9px;font-weight:800;color:#000;
+  font-family:var(--fh);
+}
+
+/* MAIN */
+.main{padding:16px 18px 40px;max-width:720px;margin:0 auto;position:relative;z-index:1;}
+.section{display:none;}
+.section.active{display:flex;flex-direction:column;gap:14px;animation:fadeUp 0.25s ease;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+/* SECTION HEADER */
+.sec-head{margin-bottom:4px;}
+.sec-title{font-family:var(--fh);font-size:18px;font-weight:700;line-height:1.2;}
+.sec-title span{background:linear-gradient(90deg,var(--a1),var(--a2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.sec-sub{font-size:12px;color:var(--muted);margin-top:5px;line-height:1.5;}
+
+/* CARD */
+.card{
+  background:var(--s1);
+  border:1px solid var(--border);
+  border-radius:var(--r);overflow:hidden;
+}
+.card-head{
+  padding:11px 16px;
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:8px;
+  font-family:var(--fh);font-size:10px;font-weight:700;
+  letter-spacing:0.5px;color:var(--muted);text-transform:uppercase;
+}
+.card-head .ch-icon{font-size:14px;}
+.card-body{padding:14px 16px;}
+.card-body.tight{padding:10px 16px;}
+
+/* FORM ELEMENTS */
+.field-label{
+  display:block;font-size:10px;font-weight:700;
+  text-transform:uppercase;letter-spacing:0.8px;
+  color:var(--muted);margin-bottom:7px;
+}
+.chip-row{display:flex;flex-wrap:wrap;gap:7px;}
+.chip{
+  padding:7px 13px;border-radius:20px;
+  border:1px solid var(--border2);
+  background:var(--s2);color:var(--muted2);
+  font-size:12px;font-weight:500;cursor:pointer;
+  transition:all 0.15s;user-select:none;white-space:nowrap;
+}
+.chip:hover{border-color:rgba(255,255,255,0.2);}
+.chip.on{font-weight:700;}
+
+/* chip color themes */
+.chip.on.c-gold{background:rgba(247,195,95,0.12);border-color:var(--a1);color:var(--a1);}
+.chip.on.c-rose{background:rgba(240,90,126,0.12);border-color:var(--a2);color:var(--a2);}
+.chip.on.c-teal{background:rgba(91,196,208,0.12);border-color:var(--a3);color:var(--a3);}
+.chip.on.c-violet{background:rgba(155,127,232,0.12);border-color:var(--a4);color:var(--a4);}
+.chip.on.c-green{background:rgba(91,208,138,0.12);border-color:var(--a5);color:var(--a5);}
+
+select,input[type=text],input[type=password],textarea{
+  width:100%;padding:10px 13px;
+  border-radius:var(--r2);
+  border:1px solid var(--border2);
+  background:var(--s2);color:var(--text);
+  font-family:var(--fb);font-size:13px;outline:none;
+  transition:border-color 0.15s;
+}
+select{
+  appearance:none;cursor:pointer;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath fill='rgba(255,255,255,0.3)' d='M5 7L1 3h8z'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 12px center;
+}
+select option{background:#161625;}
+textarea{resize:vertical;min-height:68px;line-height:1.5;}
+input:focus,select:focus,textarea:focus{border-color:rgba(255,255,255,0.25);}
+::placeholder{color:rgba(255,255,255,0.2);}
+
+/* GRID */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+@media(max-width:460px){.g2{grid-template-columns:1fr;}}
+
+/* TALENT PREVIEW */
+.talent-preview{
+  display:none;margin-top:10px;
+  padding:10px 13px;border-radius:var(--r2);
+  border:1px solid var(--border);background:var(--s2);
+  font-size:12px;color:var(--muted2);line-height:1.5;
+}
+.talent-preview.show{display:block;}
+
+/* PRIMARY BUTTON */
+.btn-primary{
+  width:100%;padding:15px;border-radius:var(--r);border:none;
+  background:linear-gradient(135deg,var(--a1) 0%,var(--a2) 100%);
+  color:#0a0a14;font-family:var(--fh);font-size:14px;font-weight:700;
+  cursor:pointer;letter-spacing:-0.2px;
+  transition:all 0.2s;
+  box-shadow:0 6px 24px rgba(245,230,66,0.2);
+  position:relative;overflow:hidden;
+}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 10px 32px rgba(247,195,95,0.3);}
+.btn-primary:active{transform:translateY(0);}
+.btn-primary:disabled{
+  background:var(--s2);color:var(--muted);
+  box-shadow:none;cursor:not-allowed;transform:none;
+}
+.spinner{
+  display:inline-block;width:14px;height:14px;
+  border:2px solid rgba(10,10,20,0.3);
+  border-top-color:#0a0a14;border-radius:50%;
+  animation:spin 0.7s linear infinite;
+  vertical-align:middle;margin-right:7px;
+}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* SECONDARY BUTTON */
+.btn-sec{
+  padding:8px 16px;border-radius:var(--r2);
+  border:1px solid var(--border2);
+  background:var(--s2);color:var(--muted2);
+  font-family:var(--fb);font-size:12px;font-weight:600;
+  cursor:pointer;transition:all 0.15s;
+}
+.btn-sec:hover{background:var(--s3);color:var(--text);}
+
+/* RESULT BOX */
+.result-wrap{
+  border-radius:var(--r);
+  border:1px solid rgba(91,196,208,0.25);
+  background:var(--s1);overflow:hidden;
+}
+.result-bar{
+  padding:10px 14px;
+  background:rgba(91,196,208,0.06);
+  border-bottom:1px solid rgba(91,196,208,0.12);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.result-tag{
+  font-family:var(--fh);font-size:10px;font-weight:700;
+  color:var(--a3);letter-spacing:0.5px;
+  display:flex;align-items:center;gap:6px;
+}
+.result-actions{display:flex;gap:6px;}
+.result-body{
+  padding:16px;font-size:13px;line-height:1.9;
+  white-space:pre-wrap;color:var(--muted2);
+  max-height:520px;overflow-y:auto;
+}
+.result-body::-webkit-scrollbar{width:3px;}
+.result-body::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:2px;}
+
+/* PIPELINE VISUAL */
+.pipeline{
+  display:flex;align-items:center;gap:0;
+  padding:14px 16px;overflow-x:auto;scrollbar-width:none;
+}
+.pipeline::-webkit-scrollbar{display:none;}
+.pipe-step{
+  display:flex;flex-direction:column;align-items:center;
+  gap:5px;flex-shrink:0;
+}
+.pipe-icon{
+  width:36px;height:36px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;border:1px solid var(--border2);
+  background:var(--s2);transition:all 0.3s;
+}
+.pipe-icon.done{background:rgba(91,208,138,0.15);border-color:var(--a5);}
+.pipe-icon.active{background:rgba(247,195,95,0.15);border-color:var(--a1);animation:pipePulse 1s infinite;}
+@keyframes pipePulse{0%,100%{box-shadow:0 0 0 0 rgba(247,195,95,0.3);}50%{box-shadow:0 0 0 6px rgba(247,195,95,0);}}
+.pipe-label{font-size:9px;color:var(--muted);font-weight:600;text-align:center;max-width:44px;line-height:1.2;}
+.pipe-arrow{
+  width:24px;height:2px;
+  background:linear-gradient(90deg,var(--border2),transparent);
+  flex-shrink:0;margin:0 2px;margin-bottom:18px;
+}
+
+/* ALERT */
+.alert{padding:10px 14px;border-radius:var(--r2);font-size:12px;line-height:1.6;}
+.alert-warn{background:rgba(247,195,95,0.08);border:1px solid rgba(247,195,95,0.2);color:rgba(247,195,95,0.85);}
+.alert-info{background:rgba(91,196,208,0.07);border:1px solid rgba(91,196,208,0.18);color:rgba(91,196,208,0.85);}
+.alert-success{background:rgba(91,208,138,0.08);border:1px solid rgba(91,208,138,0.2);color:rgba(91,208,138,0.85);}
+
+/* SETTINGS ENGINE PICKER */
+.engine-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.engine-card{
+  padding:13px;border-radius:var(--r2);
+  border:1.5px solid var(--border);
+  background:var(--s2);cursor:pointer;transition:all 0.15s;
+  text-align:center;
+}
+.engine-card:hover{border-color:var(--border2);}
+.engine-card.on.gemini{border-color:#4285f4;background:rgba(66,133,244,0.08);}
+.engine-card.on.claude{border-color:var(--a1);background:rgba(247,195,95,0.08);}
+.engine-emoji{font-size:22px;margin-bottom:5px;}
+.engine-name{font-family:var(--fh);font-size:12px;font-weight:700;}
+.engine-desc{font-size:10px;color:var(--muted);margin-top:3px;line-height:1.4;}
+
+/* TALENT CARDS in Agent 4 */
+.talent-card{
+  background:var(--s1);border:1px solid var(--border);
+  border-radius:var(--r);overflow:hidden;
+}
+.talent-top{padding:14px 16px;display:flex;gap:12px;align-items:flex-start;}
+.talent-avi{
+  width:52px;height:52px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:24px;flex-shrink:0;
+}
+.talent-name{font-family:var(--fh);font-size:15px;font-weight:700;}
+.talent-meta{font-size:11px;color:var(--muted);margin-top:3px;line-height:1.5;}
+.talent-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px;}
+.t-tag{
+  padding:2px 9px;border-radius:8px;font-size:10px;
+  font-weight:700;border:1px solid;
+}
+.prompt-section{border-top:1px solid var(--border);}
+.prompt-block{padding:12px 16px;border-bottom:1px solid var(--border);}
+.prompt-block:last-child{border-bottom:none;}
+.prompt-lbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:7px;}
+.prompt-box{
+  position:relative;
+  background:rgba(0,0,0,0.3);border:1px solid var(--border);
+  border-radius:8px;padding:10px 40px 10px 12px;
+  font-size:11px;color:var(--muted2);line-height:1.6;
+  font-family:'Courier New',monospace;
+}
+.copy-mini{
+  position:absolute;top:6px;right:6px;
+  padding:3px 7px;border-radius:5px;
+  border:1px solid var(--border2);background:var(--s2);
+  color:var(--muted);font-size:9px;cursor:pointer;
+}
+
+/* STEP CARDS (Deploy) */
+.step-card{
+  display:flex;gap:12px;
+  background:var(--s1);border:1px solid var(--border);
+  border-radius:var(--r);padding:14px 16px;
+}
+.step-num{
+  width:30px;height:30px;border-radius:9px;
+  background:linear-gradient(135deg,var(--a1),var(--a2));
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--fh);font-size:13px;font-weight:900;
+  color:#0a0a14;flex-shrink:0;
+}
+.step-title{font-family:var(--fh);font-size:13px;font-weight:700;margin-bottom:5px;}
+.step-desc{font-size:12px;color:var(--muted2);line-height:1.6;}
+code{
+  background:rgba(0,0,0,0.4);border:1px solid var(--border2);
+  border-radius:4px;padding:1px 6px;
+  font-family:'Courier New',monospace;font-size:11px;color:var(--a3);
+}
+
+/* APPROVAL QUEUE */
+.approval-item{
+  background:var(--s1);border:1px solid var(--border);
+  border-radius:var(--r);overflow:hidden;
+}
+.approval-head{
+  padding:10px 14px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.approval-meta{font-size:11px;color:var(--muted);}
+.approval-platform{
+  padding:3px 9px;border-radius:8px;font-size:10px;font-weight:700;
+  background:var(--s2);color:var(--muted2);border:1px solid var(--border2);
+}
+.approval-content{
+  padding:12px 14px;font-size:12px;color:var(--muted2);
+  line-height:1.7;max-height:140px;overflow:hidden;position:relative;
+}
+.approval-content::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;
+  height:30px;background:linear-gradient(transparent,var(--s1));
+}
+.approval-actions{
+  padding:10px 14px;border-top:1px solid var(--border);
+  display:flex;gap:7px;
+}
+.btn-approve{
+  flex:1;padding:8px;border-radius:var(--r2);border:none;
+  background:rgba(91,208,138,0.15);border:1px solid rgba(91,208,138,0.3);
+  color:var(--a5);font-family:var(--fb);font-size:12px;font-weight:700;
+  cursor:pointer;transition:all 0.15s;
+}
+.btn-approve:hover{background:rgba(91,208,138,0.25);}
+.btn-revise{
+  flex:1;padding:8px;border-radius:var(--r2);
+  border:1px solid rgba(247,195,95,0.3);
+  background:rgba(247,195,95,0.08);
+  color:var(--a1);font-family:var(--fb);font-size:12px;font-weight:700;
+  cursor:pointer;transition:all 0.15s;
+}
+.btn-reject{
+  padding:8px 12px;border-radius:var(--r2);
+  border:1px solid rgba(240,90,126,0.3);
+  background:rgba(240,90,126,0.08);
+  color:var(--a2);font-family:var(--fb);font-size:12px;font-weight:700;
+  cursor:pointer;
+}
+
+/* SCORE BAR */
+.score-bar-wrap{margin-top:8px;}
+.score-label{font-size:10px;color:var(--muted);display:flex;justify-content:space-between;margin-bottom:4px;}
+.score-track{height:4px;background:var(--s3);border-radius:2px;overflow:hidden;}
+.score-fill{height:100%;border-radius:2px;transition:width 0.8s ease;}
+
+/* HISTORY */
+.history-item{
+  padding:11px 14px;background:var(--s1);
+  border:1px solid var(--border);border-radius:var(--r2);
+  display:flex;align-items:flex-start;gap:10px;cursor:pointer;
+  transition:border-color 0.15s;
+}
+.history-item:hover{border-color:var(--border2);}
+.h-icon{font-size:18px;flex-shrink:0;margin-top:1px;}
+.h-title{font-size:12px;font-weight:600;color:var(--text);}
+.h-meta{font-size:10px;color:var(--muted);margin-top:3px;}
+.h-badge{
+  margin-left:auto;flex-shrink:0;
+  padding:2px 8px;border-radius:8px;font-size:9px;font-weight:700;
+  background:rgba(91,208,138,0.12);color:var(--a5);border:1px solid rgba(91,208,138,0.2);
+}
+
+/* COST METER */
+.cost-meter{
+  display:flex;align-items:center;gap:8px;
+  padding:8px 12px;border-radius:var(--r2);
+  background:var(--s2);border:1px solid var(--border);
+  font-size:11px;color:var(--muted2);
+}
+.cost-icon{font-size:14px;}
+.cost-val{font-family:var(--fh);font-size:11px;font-weight:700;color:var(--a1);margin-left:auto;}
+
+/* EMPTY STATE */
+.empty{
+  padding:40px 20px;text-align:center;
+  color:var(--muted);font-size:13px;line-height:1.7;
+}
+.empty-icon{font-size:36px;margin-bottom:10px;}
+
+/* NOTIFICATION TOAST */
+.toast{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);
+  background:var(--s3);border:1px solid var(--border2);
+  border-radius:var(--r2);padding:10px 18px;
+  font-size:12px;font-weight:600;color:var(--text);
+  z-index:999;transition:transform 0.3s;white-space:nowrap;
+  box-shadow:0 8px 32px rgba(0,0,0,0.4);
+}
+.toast.show{transform:translateX(-50%) translateY(0);}
+</style>
+</head>
+<body>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="logo">☀️</div>
+  <div class="logo-info">
+    <div class="logo-name">SOFA & SOFI STUDIO</div>
+    <div class="logo-sub">5-Agent Content Marketing System</div>
+  </div>
+  <div class="status-pill" onclick="goSettings()">
+    <div class="status-dot" id="statusDot"></div>
+    <span id="statusTxt">Setup</span>
+  </div>
+</header>
+
+<!-- NAV -->
+<nav class="nav">
+  <button class="nav-btn active" onclick="goTab('a1',this)" id="nb1">
+    <span class="nav-icon">💡</span>
+    <span class="nav-num" id="nn1" style="background:var(--a1);">1</span>
+    Ide & Naskah
+  </button>
+  <button class="nav-btn" onclick="goTab('a2',this)" id="nb2">
+    <span class="nav-icon">🖼️</span>
+    <span class="nav-num" id="nn2" style="background:var(--a3);">2</span>
+    Foto
+  </button>
+  <button class="nav-btn" onclick="goTab('a3',this)" id="nb3">
+    <span class="nav-icon">🎬</span>
+    <span class="nav-num" id="nn3" style="background:var(--a2);">3</span>
+    Video
+  </button>
+  <button class="nav-btn" onclick="goTab('a4',this)" id="nb4">
+    <span class="nav-icon">✨</span>
+    <span class="nav-num" id="nn4" style="background:var(--a4);">4</span>
+    Influencer
+  </button>
+  <button class="nav-btn" onclick="goTab('a5',this)" id="nb5">
+    <span class="nav-icon">✅</span>
+    <span class="nav-num" id="nn5" style="background:var(--a5);">5</span>
+    Approval
+  </button>
+  <button class="nav-btn" onclick="goTab('settings',this)">
+    <span class="nav-icon">⚙️</span>
+    Settings
+  </button>
+</nav>
+
+<main class="main">
+
+<!-- ============================================================
+     AGENT 1 — IDE & NASKAH
+============================================================ -->
+<section class="section active" id="sec-a1">
+  <div class="sec-head">
+    <div class="sec-title">💡 Agent <span>Ide & Naskah</span></div>
+    <div class="sec-sub">Riset tren otomatis + generate naskah lengkap siap pakai untuk semua platform</div>
+  </div>
+
+  <!-- Pipeline -->
+  <div class="card">
+    <div class="pipeline" id="pipe1">
+      <div class="pipe-step"><div class="pipe-icon" id="p1s1">🔍</div><div class="pipe-label">Riset Tren</div></div>
+      <div class="pipe-arrow"></div>
+      <div class="pipe-step"><div class="pipe-icon" id="p1s2">💡</div><div class="pipe-label">Generate Ide</div></div>
+      <div class="pipe-arrow"></div>
+      <div class="pipe-step"><div class="pipe-icon" id="p1s3">✍️</div><div class="pipe-label">Buat Naskah</div></div>
+      <div class="pipe-arrow"></div>
+      <div class="pipe-step"><div class="pipe-icon" id="p1s4">📋</div><div class="pipe-label">Output Siap</div></div>
+    </div>
+  </div>
+
+  <!-- Platform -->
+  <div class="card">
+    <div class="card-head"><span class="ch-icon">📱</span> Platform Target</div>
+    <div class="card-body tight">
+      <div class="chip-row" id="cpPlatform">
+        <div class="chip on c-rose" data-val="Instagram" onclick="pickChip(this,'cpPlatform')">📸 Instagram</div>
+        <div class="chip" data-val="TikTok" onclick="pickChip(this,'cpPlatform')">🎵 TikTok</div>
+        <div class="chip" data-val="YouTube Shorts" onclick="pickChip(this,'cpPlatform')">▶️ YT Shorts</div>
+        <div class="chip" data-val="YouTube" onclick="pickChip(this,'cpPlatform')">🎬 YouTube</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="g2">
+    <!-- Produk -->
+    <div class="card">
+      <div class="card-head"><span class="ch-icon">🪑</span> Produk</div>
+      <div class="card-body"><select id="a1Product">
+        <option>Kursi Kuliah Baru</option>
+        <option>Kursi Kuliah Original</option>
+        <option>Kursi Kuliah Seken</option>
+        <option>Kursi Lipat</option>
+        <option>Sofa Sofi (Digital)</option>
+      </select></div>
+    </div>
+    <!-- Tipe -->
+    <div class="card">
+      <div class="card-head"><span class="ch-icon">🎭</span> Tipe Konten</div>
+      <div class="card-body"><select id="a1Type">
+        <option>Review & Testimoni</option>
+        <option>Demo Produk</option>
+        <option>Before vs After</option>
+        <option>Tips & Edukasi</option>
+        <option>Promo / Flash Sale</option>
+        <option>Behind the Scenes</option>
+        <option>Unboxing</option>
+        <option>Comparison</option>
+        <option>Storyboard Video</option>
+      </select></div>
+    </div>
+  </div>
+
+  <!-- Gaya -->
+  <div class="card">
+    <div class="card-head"><span class="ch-icon">🎨</span> Gaya Bahasa</div>
+    <div class="card-body tight">
+      <div class="chip-row" id="cpGaya">
+        <div class="chip on c-gold" data-val="Santai & Gen-Z" onclick="pickChip(this,'cpGaya')">😎 Santai Gen-Z</div>
+        <div class="chip" data-val="Profesional" onclick="pickChip(this,'cpGaya')">💼 Profesional</div>
+        <div class="chip" data-val="Lucu & Viral" onclick="pickChip(this,'cpGaya')">😂 Lucu Viral</div>
+        <div class="chip" data-val="Edukatif" onclick="pickChip(this,'cpGaya')">📚 Edukatif</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Talent -->
+  <div class="card">
+    <div class="card-head"><span class="ch-icon">✨</span> Sertakan AI Talent</div>
+    <div class="card-body">
+      <div class="chip-row" id="cpTalent1">
+        <div class="chip on c-teal" data-val="none" onclick="pickTalent(this,'cpTalent1')">🚫 Tanpa Talent</div>
+        <div class="chip" data-val="sari" onclick="pickTalent(this,'cpTalent1')">👩‍🎓 Sari</div>
+        <div class="chip" data-val="budi" onclick="pickTalent(this,'cpTalent1')">👨‍💼 Budi</div>
+        <div class="chip" data-val="nina" onclick="pickTalent(this,'cpTalent1')">✨ Nina</div>
+        <div class="chip" data-val="custom" onclick="pickTalent(this,'cpTalent1')">👤 Custom</div>
+      </div>
+      <div class="talent-preview" id="tp1"></div>
+    </div>
+  </div>
+
+  <!-- Catatan -->
+  <div class="card">
+    <div class="card-head"><span class="ch-icon">📝</span> Brief Tambahan</div>
+    <div class="card-body">
+      <textarea id="a1Notes" placeholder="Contoh: fokus harga murah, ada promo akhir bulan, target mahasiswa semester 1, tone casual..."></textarea>
+    </div>
+  </div>
+
+  <!-- Mode -->
+  <div class="card">
+    <div class="card-head"><span class="ch-icon">⚡</span> Mode Generate</div>
+    <div class="card-body tight">
+      <div class="chip-row" id="cpMode">
+        <div class="chip on c-gold" data-val="full" onclick="pickChip(this,'cpMode')">🚀 Lengkap</div>
+        <div class="chip" data-val="ideas" onclick="pickChip(this,'cpMode')">💡 Ide Saja (3 opsi)</div>
+        <div class="chip" data-val="caption" onclick="pickChip(this,'cpMode')">💬 Caption + Hashtag</div>
+        <div class="chip" data-val="storyboard" onclick="pickChip(this,'cpMode')">🎬 Storyboard Video</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cost-meter">
+    <span class="cost-icon">💰</span>
+    <span>Estimasi biaya request ini</span>
+    <span class="cost-val">~Rp 0.005</span>
+  </div>
+
+  <button class="btn-primary" id="btnA1" onclick="runAgent1()">
+    🚀 Generate Konten Sekarang
+  </button>
+
+  <div id="a1Result" style="display:none;">
+    <div class="result-wrap">
+      <div class="result-bar">
+        <div class="result-tag" id="a1Tag">✅ OUTPUT</div>
+        <div class="result-actions">
+          <button class="btn-sec" onclick="sendToApproval('a1')">📤 Kirim ke Approval</button>
+          <button class="btn-sec" id="a1CopyBtn" onclick="copyResult('a1Content','a1CopyBtn')">📋 Copy</button>
+        </div>
+      </div>
+      <div class="result-body" id="a1Content"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     AGENT 2 — GENERATE FOTO
+============================================================ -->
+<section class="section" id="sec-a2">
+  <div class="sec-head">
+    <div class="sec-title">🖼️ Agent <span>Generate Foto</span></div>
+    <div class="sec-sub">Generate 3 angle foto produk + talent + background. Prompt Midjourney/Imagen siap pakai.</div>
+  </div>
+
+  <div class="alert alert-info">📸 Mode: Generate prompt yang dioptimasi untuk Gemini Imagen (langsung) atau Midjourney (copy-paste). Aktifkan billing untuk generate langsung.</div>
+
+  <!-- Output Mode -->
+  <div class="card">
+    <div class="card-head"><span class="ch-icon">⚙️</span> Mode Output</div>
+    <div class="card-body tight">
+      <div class="chip-row" id="cpPhotoMode">
+        <div class="chip on c-teal" data-val="prompt" onclick="pickChip(this,'cpPhotoMode')">📋 Prompt Siap Pakai</div>
+        <div class="chip" data-val="direct" onclick="pickChip(this,'cpPhotoMode')">⚡ Generate Langsung (Imagen)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Produk & Background -->
+  <div class="g2">
+    <div class="card">
+      <div class="card-head"><span class="ch-icon">🪑</span> Produk</div>
+      <div class="card-body"><select id="a2Product">
+        <option>Kursi Kuliah Baru</option>
+        <option>Kursi Kuliah Original</option>
+        <option>Kursi Kuliah Seken</option>
+        <option>Kursi Lipat</option>
+      </select></div>
+    </div>
+    <div class="card">
+      <div class="card-head"><span class="ch-icon">🎨</span> Warna Kursi</div>
+      <div class="card-body"><select id="a2Color">
+        <option>Hitam</option>
+        <option>Biru Navy</option>
+        <option>Merah Maroon</option>
+        <option>Abu-abu</option>
+        <option>Hijau Olive</option>
+        <option>Orange</option>
+      </select></div>
+    </div>
+  </div>
+
+  <!-- Background -->
+  <div class="card">
+    <div class="card-head"><span class="ch-icon">🏙️</span> Background / Setting</div>
+    <div class="card-body tight">
+      <div class="chip-row" id="cpBG">
+        <div class="chip on c-rose" data-val="Aesthetic cafe dengan tanaman hijau dan warm lighting" onclick="pickChip(this,'cpBG')">☕ Cafe Aesthetic</div>
+        <div class="chip" data-val="Studio foto minimalis dengan neon sign dan dark background" onclick="pickChip(this,'cpBG')">🌈 Neon Studio</div>
+        <div class="chip" data-val="Ruang kelas universitas modern dengan jendela besar" onclick="pickChip(this,'cpBG')">🏫 Kampus Modern</div>
+        <div class="chip" data-val="Rooftop kota dengan pemandangan golden hour sore hari" onclick="pickChip(this,'cpBG')">🌇 Rooftop Golden Hour</div>
+        <div class="chip" data-val="Home office aesthetic dengan rak buku dan tanaman" onclick="pickChip(this,'cpBG')">🏡 Home Office</div>
+        <div class="chip" data-val="Outdoor taman tropis dengan cahaya natural" onclick="pickChip(this,'cpBG')">🌿 Taman Tropis</div>
+        <div class="chip" data-val="Studio putih minimalis profesional" onclick="pickChip(this,'cpBG')">⬜ Studio Putih</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Talent -->
+  <div class="card">
+    <div class="card-head"><span class="ch-icon">👤</span> Sertakan Talent</div>
+    <div class="card-body">
+      <div class="chip-row" id="cpTalent2">
+        <div class="chip on c-gold" data-val="none" onclick="pickTalent(this,'cpTalent2')">🪑 Produk Saja</div>
+        <div class="chip" data-val="sari" onclick="pickTalent(this,'cpTalent2')">👩‍🎓 Sari</div>
+        <div class="chip" data-val="budi" onclick="pickTalent(this,'cpTalent2')">👨‍💼 Budi</div>
+        <div class="chip" data-val="nina" onclick="pickTalent(this,'cpTalent2')">✨ Nina</div>
+        <div class="chip" data-val="custom" onclick="pickTalent(this,'cpTalent2')">👤 Wajah Saya</div>
+      </div>
+      <div class="talent-preview" id="tp2"></div>
+    </div>
+  </div>
+
+  <!-- Angle -->
+  <div class="card">
+    <div class="card-head"><span class="ch-icon">📐</span> Angle Foto (3 Otomatis)</div>
+    <div class="card-body tight">
+      <div class="chip-row" id="cpAngle">
+        <div class="chip on c-violet" data-val="auto3" onclick="pickChip(this,'cpAngle')">🎯 Auto 3 Angle</div>
+        <div class="chip" data-val="closeup" onclick="pickChip(this,'cpAngle')">🔍 Close-Up Detail</div>
+        <div class="chip" data-val="medium" onclick="pickChip(this,'cpAngle')">👤 Medium Shot</div>
+        <div class="chip" data-val="lifestyle" onclick="pickChip(this,'cpAngle')">🌟 Lifestyle Wide</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ratio -->
+  <div class="card">
+    <div class="card-head"><span class="ch-icon">📏</span> Rasio</div>
+    <div class="card-body tight">
+      <div class="chip-row" id="cpRatio">
+        <div class="chip on c-teal" data-val="4:5" onclick="pickChip(this,'cpRatio')">📱 4:5 (Instagram)</div>
+        <div class="chip" data-val="1:1" onclick="pickChip(this,'cpRatio')">⬛ 1:1 (Square)</div>
+        <div class="chip" data-val="9:16" onclick="pickChip(this,'cpRatio')">📲 9:16 (Stories)</div>
+        <div class="chip" data-val="16:9" onclick="pickChip(this,'cpRatio')">🖥️ 16:9 (YouTube)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cost-meter">
+    <span class="cost-icon">💰</span>
+    <span>Estimasi (3 prompt saja)</span>
+    <span class="cost-val">~Rp 0.01</span>
+  </div>
+
+  <button class="btn-primary" id="btnA2" onclick="runAgent2()">
+    🖼️ Generate 3 Prompt Foto
+  </button>
+
+  <div id="a2Result" style="display:none;">
+    <div class="result-wrap">
+      <div class="result-bar">
+        <div class="result-tag">🖼️ 3 PROMPT FOTO SIAP</div>
+        <div class="result-actions">
+          <button class="btn-sec" id="a2CopyBtn" onclick="copyResult('a2Content','a2CopyBtn')">📋 Copy Semua</button>
+        </div>
+      </div>
+      <div class="result-body" id="a2Content"></div>
+    </div>
+    <div class="alert alert-info" style="margin-top:10px;">💡 Copy prompt di atas → paste ke <b>Midjourney</b> atau <b>Google AI Studio (Imagen)</b> → generate foto. Aktifkan billing Gemini API untuk generate langsung di sini.</div>
+  </div>
+</section>
+
+<!-- ============================================================
+     AGENT 3 — GENERATE VIDEO
+============================================================ -->
+<section class="section" id="sec-a3">
+  <div class="sec-head">
+    <div class="sec-title">🎬 Agent <span>Generate Video</span></div>
+    <div class="sec-sub">Multi-shot video prompt untuk Veo 3.1 (Gemini) atau Kling AI. Generate langsung dengan billing aktif.</div>
+  </div>
+
+  <!-- Engine Video -->
+  <div class="card">
+    <div class="card-head"><span class="ch-icon">🎥</span> Engine Video</div>
+    <div class="card-body tight">
+      <div class="chip-row" id="cpVideoEngine">
+        <div class="chip on c-gold" data-val="veo" onclick="pickChip(this,'cpVideoEngine')">🔵 Veo 3.1 (Gemini)</div>
+        <div class="chip" data-val="kling" onclick="pickChip(this,'cpVideoEngine')">🎯 Kling AI (Prompt)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="card-head"><span class="ch-icon">🪑</span> Produk</div>
+      <div class="card-body"><select id="a3Product">
+        <option>Kursi Kuliah Baru</option>
+        <option>Kursi Kuliah Original</option>
+        <option>Kursi Kuliah Seken</option>
+        <option>Kursi Lipat</option>
+        <option>Sofa Sofi (Digital)</option>
+      </select></div>
+    </div>
+    <div class="card">
+      <div class="card-head"><span class="ch-icon">📱</span> Platform</div>
+      <div class="card-body"><select id="a3Platform">
+        <option>TikTok (9:16, 15-30 detik)</option>
+        <option>Instagram Reels (9:16, 15-30 detik)</option>
+        <option>YouTube Shorts (9:16, max 60 detik)</option>
+        <option>YouTube (16:9, 1-3 menit)</option>
+        <option>Instagram Feed (4:5, 15 detik)</option>
+      </select></div>
+    </div>
+  </div>
+
+  <!-- Talent -->
+  <div class="card">
+    <div class="card-head"><span class="ch-icon">✨</span> Talent dalam Video</div>
+    <div class="card-body">
+      <div class="chip-row" id="cpTalent3">
+        <div class="chip on c-gold" data-val="none" onclick="pickTalent(this,'cpTalent3')">🎬 Tanpa Talent</div>
+        <div class="chip" data-val="sari" onclick="pickTalent(this,'cpTalent3')">👩‍🎓 Sari</div>
+        <div class="chip" data-val="budi" onclick="pickTalent(this,'cpTalent3')">👨‍💼 Budi</div>
+        <div class="chip" data-val="nina" onclick="pickTalent(this,'cpTalent3')">✨ Nina</div>
+        <div class="chip" data-val="custom" onclick="pickTalent(this,'cpTalent3')">👤 Wajah Saya</div>
+      </div>
+      <div class="talent-preview" id="tp3"></div>
+    </div>
+  </div>
+
+  <!-- Setting & Mood -->
+  <div class="g2">
+    <div class="card">
+      <div class="card-head"><span class="ch-icon">🏙️</span> Setting</div>
+      <div class="card-body"><select id="a3Setting">
+        <option>Aesthetic Cafe</option>
+        <option>Kampus Modern</option>
+        <option>Home Office</option>
+        <option>Neon Studio</option>
+        <option>Rooftop Golden Hour</option>
+        <option>Taman Tropis</option>
+        <option>Studio Putih</option>
+      </select></div>
+    </div>
+    <div class="card">
+      <div class="card-head"><span class="ch-icon">🎭</span> Mood Video</div>
+      <div class="card-body"><select id="a3Mood">
+        <option>Ceria & Energik</option>
+        <option>Premium & Elegan</option>
+        <option>Santai & Relax</option>
+        <option>Dramatis & Cinematic</option>
+        <option>Fun & Viral</option>
+        <option>Profesional</option>
+      </select></div>
+    </div>
+  </div>
+
+  <!-- Durasi -->
+  <div class="card">
+    <div class="card-head"><span class="ch-icon">⏱️</span> Durasi Target</div>
+    <div class="card-body tight">
+      <div class="chip-row" id="cpDur">
+        <div class="chip on c-rose" data-val="8" onclick="pickChip(this,'cpDur')">⚡ 8 detik (1 clip)</div>
+        <div class="chip" data-val="15" onclick="pickChip(this,'cpDur')">🎬 15 detik (2 clips)</div>
+        <div class="chip" data-val="30" onclick="pickChip(this,'cpDur')">📱 30 detik (4 clips)</div>
+        <div class="chip" data-val="60" onclick="pickChip(this,'cpDur')">🎥 60 detik (8 clips)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Audio -->
+  <div class="card">
+    <div class="card-head"><span class="ch-icon">🔊</span> Audio / Voiceover</div>
+    <div class="card-body tight">
+      <div class="chip-row" id="cpAudio">
+        <div class="chip on c-violet" data-val="native" onclick="pickChip(this,'cpAudio')">🔵 Native Audio Veo</div>
+        <div class="chip" data-val="elevenlabs" onclick="pickChip(this,'cpAudio')">🎙️ ElevenLabs Voiceover</div>
+        <div class="chip" data-val="music" onclick="pickChip(this,'cpAudio')">🎵 Background Music Saja</div>
+        <div class="chip" data-val="silent" onclick="pickChip(this,'cpAudio')">🔇 Tanpa Audio</div>
+      </div>
+    </div>
+  </div>
+
+  <textarea id="a3Notes" placeholder="Brief tambahan: pesan utama, produk highlight, angle spesifik..."></textarea>
+
+  <div class="cost-meter">
+    <span class="cost-icon">💰</span>
+    <span>Estimasi biaya video (8 dtk Veo 3.1 Lite)</span>
+    <span class="cost-val">~Rp 6.500/clip</span>
+  </div>
+
+  <button class="btn-primary" id="btnA3" onclick="runAgent3()">
+    🎬 Generate Multi-Shot Video Prompt
+  </button>
+
+  <div id="a3Result" style="display:none;">
+    <div class="result-wrap">
+      <div class="result-bar">
+        <div class="result-tag">🎬 VIDEO PROMPT SIAP</div>
+        <div class="result-actions">
+          <button class="btn-sec" onclick="sendToApproval('a3')">📤 Ke Approval</button>
+          <button class="btn-sec" id="a3CopyBtn" onclick="copyResult('a3Content','a3CopyBtn')">📋 Copy</button>
+        </div>
+      </div>
+      <div class="result-body" id="a3Content"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     AGENT 4 — INFLUENCER AI
+============================================================ -->
+<section class="section" id="sec-a4">
+  <div class="sec-head">
+    <div class="sec-title">✨ Agent <span>Influencer AI</span></div>
+    <div class="sec-sub">Kelola karakter AI talent. Generate script per karakter, prompt foto konsisten, voice clone setup.</div>
+  </div>
+
+  <!-- Mode -->
+  <div class="card">
+    <div class="card-head"><span class="ch-icon">⚡</span> Mode Agent 4</div>
+    <div class="card-body tight">
+      <div class="chip-row" id="cpA4Mode">
+        <div class="chip on c-violet" data-val="library" onclick="pickChip(this,'cpA4Mode');showA4Mode('library')">📚 Library Karakter</div>
+        <div class="chip" data-val="script" onclick="pickChip(this,'cpA4Mode');showA4Mode('script')">✍️ Generate Script</div>
+        <div class="chip" data-val="clone" onclick="pickChip(this,'cpA4Mode');showA4Mode('clone')">🎭 Setup Kloning</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LIBRARY MODE -->
+  <div id="a4ModeLibrary">
+    <!-- Sari -->
+    <div class="talent-card">
+      <div class="talent-top">
+        <div class="talent-avi" style="background:rgba(240,90,126,0.15);border:1px solid rgba(240,90,126,0.3);">👩‍🎓</div>
+        <div style="flex:1;">
+          <div class="talent-name" style="color:var(--a2);">Sari Pratiwi</div>
+          <div class="talent-meta">24 th · Mahasiswi Yogyakarta · Ceria, Gen-Z, relate kampus</div>
+          <div class="talent-tags">
+            <div class="t-tag" style="color:var(--a2);border-color:rgba(240,90,126,0.3);">TikTok</div>
+            <div class="t-tag" style="color:var(--a2);border-color:rgba(240,90,126,0.3);">Reels</div>
+            <div class="t-tag" style="color:var(--a2);border-color:rgba(240,90,126,0.3);">Kursi Kuliah</div>
+          </div>
+        </div>
+      </div>
+      <div class="prompt-section">
+        <div class="prompt-block">
+          <div class="prompt-lbl">📸 Gemini Imagen Prompt</div>
+          <div class="prompt-box">Realistic photo, Indonesian college girl, 24 years old, warm friendly smile, black long hair, wearing casual oversized hoodie and jeans, sitting on a black plastic lecture chair, bright aesthetic cafe background, natural window light, candid lifestyle photography, portrait 4:5, photorealistic, high detail, no blur<button class="copy-mini" onclick="copyMini(this)">Copy</button></div>
+        </div>
+        <div class="prompt-block">
+          <div class="prompt-lbl">🎥 HeyGen / Veo Script Starter</div>
+          <div class="prompt-box">"Hai guys, Sari di sini! Jadi aku baru aja upgrade kursi kuliah aku dan literally ini game changer banget. Kalian yang sering begadang ngerjain skripsi, wajib banget dengerin ini..."<button class="copy-mini" onclick="copyMini(this)">Copy</button></div>
+        </div>
+        <div class="prompt-block">
+          <div class="prompt-lbl">🎬 Veo 3.1 Character Reference</div>
+          <div class="prompt-box">Portrait 9:16, 8 seconds. Indonesian college girl (Sari, reference: warm smile, black long hair), sitting on black lecture chair in aesthetic cafe, looks up at camera with bright smile, slight head tilt. Warm golden ambient light. Smooth handheld motion. Realistic.<button class="copy-mini" onclick="copyMini(this)">Copy</button></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Budi -->
+    <div class="talent-card">
+      <div class="talent-top">
+        <div class="talent-avi" style="background:rgba(91,196,208,0.15);border:1px solid rgba(91,196,208,0.3);">👨‍💼</div>
+        <div style="flex:1;">
+          <div class="talent-name" style="color:var(--a3);">Budi Santoso</div>
+          <div class="talent-meta">36 th · Staf Pengadaan Kampus Jakarta · Profesional, terpercaya</div>
+          <div class="talent-tags">
+            <div class="t-tag" style="color:var(--a3);border-color:rgba(91,196,208,0.3);">YouTube</div>
+            <div class="t-tag" style="color:var(--a3);border-color:rgba(91,196,208,0.3);">Instagram</div>
+            <div class="t-tag" style="color:var(--a3);border-color:rgba(91,196,208,0.3);">Instansi</div>
+          </div>
+        </div>
+      </div>
+      <div class="prompt-section">
+        <div class="prompt-block">
+          <div class="prompt-lbl">📸 Gemini Imagen Prompt</div>
+          <div class="prompt-box">Realistic photo, Indonesian professional man, 36 years old, clean confident look, wearing batik shirt, sitting upright on ergonomic lecture chair, modern university office background, professional warm lighting, corporate lifestyle photography, portrait 4:5, photorealistic<button class="copy-mini" onclick="copyMini(this)">Copy</button></div>
+        </div>
+        <div class="prompt-block">
+          <div class="prompt-lbl">🎥 Script Starter</div>
+          <div class="prompt-box">"Sebagai pengelola pengadaan selama 10 tahun, saya sangat selektif dalam memilih furnitur. Kualitas, ketahanan, dan harga harus seimbang. Dan Sofa Sofi sudah membuktikan ketiganya..."<button class="copy-mini" onclick="copyMini(this)">Copy</button></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Nina -->
+    <div class="talent-card">
+      <div class="talent-top">
+        <div class="talent-avi" style="background:rgba(155,127,232,0.15);border:1px solid rgba(155,127,232,0.3);">✨</div>
+        <div style="flex:1;">
+          <div class="talent-name" style="color:var(--a4);">Nina Creative</div>
+          <div class="talent-meta">27 th · Content Creator Bandung · Aesthetic, UMKM enthusiast</div>
+          <div class="talent-tags">
+            <div class="t-tag" style="color:var(--a4);border-color:rgba(155,127,232,0.3);">Instagram</div>
+            <div class="t-tag" style="color:var(--a4);border-color:rgba(155,127,232,0.3);">TikTok</div>
+            <div class="t-tag" style="color:var(--a4);border-color:rgba(155,127,232,0.3);">Sofa Sofi Digital</div>
+          </div>
+        </div>
+      </div>
+      <div class="prompt-section">
+        <div class="prompt-block">
+          <div class="prompt-lbl">📸 Gemini Imagen Prompt</div>
+          <div class="prompt-box">Realistic photo, Indonesian creative woman, 27 years old, aesthetic fashion linen outfit, sitting cross-legged on folding chair, cozy home studio background, warm ambient light, open laptop, plants visible, influencer lifestyle photography, portrait 4:5, photorealistic<button class="copy-mini" onclick="copyMini(this)">Copy</button></div>
+        </div>
+        <div class="prompt-block">
+          <div class="prompt-lbl">🎥 Script Starter</div>
+          <div class="prompt-box">"Kalau kamu UMKM atau freelancer yang masih chaos ngurus bisnis, aku mau kenalin satu sistem yang literally bikin hidupku 10x lebih organized. Namanya Sofa Sofi..."<button class="copy-mini" onclick="copyMini(this)">Copy</button></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCRIPT MODE -->
+  <div id="a4ModeScript" style="display:none;">
+    <div class="card">
+      <div class="card-head"><span class="ch-icon">✍️</span> Generate Script per Karakter</div>
+      <div class="card-body" style="display:flex;flex-direction:column;gap:10px;">
+        <div>
+          <label class="field-label">Pilih Karakter</label>
+          <div class="chip-row" id="cpScriptTalent">
+            <div class="chip on c-rose" data-val="sari" onclick="pickChip(this,'cpScriptTalent')">👩‍🎓 Sari</div>
+            <div class="chip" data-val="budi" onclick="pickChip(this,'cpScriptTalent')">👨‍💼 Budi</div>
+            <div class="chip" data-val="nina" onclick="pickChip(this,'cpScriptTalent')">✨ Nina</div>
+            <div class="chip" data-val="custom" onclick="pickChip(this,'cpScriptTalent')">👤 Custom/Saya</div>
+          </div>
+        </div>
+        <div><label class="field-label">Platform</label>
+          <select id="a4Platform">
+            <option>TikTok 15 detik</option>
+            <option>TikTok 30 detik</option>
+            <option>Instagram Reels 30 detik</option>
+            <option>YouTube Shorts 60 detik</option>
+            <option>YouTube 2-3 menit</option>
+          </select>
+        </div>
+        <div><label class="field-label">Produk & Pesan Utama</label>
+          <textarea id="a4ScriptBrief" placeholder="Contoh: Kursi Kuliah Baru hitam, fokus kenyamanan duduk lama, CTA ke WA..."></textarea>
+        </div>
+        <button class="btn-primary" id="btnA4Script" onclick="runAgent4Script()">✍️ Generate Script Karakter</button>
+        <div id="a4ScriptResult" style="display:none;">
+          <div class="result-wrap">
+            <div class="result-bar">
+              <div class="result-tag">✅ SCRIPT SIAP</div>
+              <div class="result-actions">
+                <button class="btn-sec" onclick="sendToApproval('a4')">📤 Ke Approval</button>
+                <button class="btn-sec" id="a4ScriptCopy" onclick="copyResult('a4ScriptContent','a4ScriptCopy')">📋 Copy</button>
+              </div>
+            </div>
+            <div class="result-body" id="a4ScriptContent"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CLONE MODE -->
+  <div id="a4ModeClone" style="display:none;">
+    <div class="card">
+      <div class="card-head"><span class="ch-icon">🎭</span> Setup Kloning Wajah & Suara</div>
+      <div class="card-body" style="display:flex;flex-direction:column;gap:12px;">
+        <div class="alert alert-warn">⚠️ Kloning wajah & suara hanya untuk diri sendiri atau dengan izin tertulis dari orang yang bersangkutan. Selalu tambahkan disclosure "AI Content" di caption.</div>
+
+        <div>
+          <div style="font-family:var(--fh);font-size:13px;font-weight:700;margin-bottom:8px;">🖼️ Kloning Wajah — Veo 3.1</div>
+          <div style="font-size:12px;color:var(--muted2);line-height:1.7;margin-bottom:10px;">Upload 3 foto wajah ke Google AI Studio sebagai reference image. Veo 3.1 akan menjaga konsistensi wajah di semua video.</div>
+          <div style="background:var(--s2);border:1px solid var(--border);border-radius:var(--r2);padding:12px;font-size:12px;color:var(--muted2);">
+            <b style="color:var(--text);">Panduan foto yang bagus:</b><br>
+            📸 Foto 1: Wajah depan, ekspresi natural, cahaya terang<br>
+            📸 Foto 2: Sudut 45 derajat, senyum<br>
+            📸 Foto 3: Sambil duduk/aktivitas, natural<br><br>
+            <b style="color:var(--a1);">Tips:</b> Foto di tempat terang, tidak pakai kacamata, background polos lebih baik.
+          </div>
+        </div>
+
+        <div>
+          <div style="font-family:var(--fh);font-size:13px;font-weight:700;margin-bottom:8px;">🎙️ Kloning Suara — ElevenLabs</div>
+          <div style="font-size:12px;color:var(--muted2);line-height:1.7;margin-bottom:10px;">Rekam suara kamu 1-2 menit, upload ke ElevenLabs untuk Instant Voice Clone (gratis).</div>
+          <div style="background:var(--s2);border:1px solid var(--border);border-radius:var(--r2);padding:12px;font-size:12px;">
+            <b style="color:var(--text);">Script rekaman yang disarankan:</b>
+            <div style="margin-top:8px;padding:10px;background:rgba(0,0,0,0.3);border-radius:8px;color:var(--muted2);line-height:1.7;font-style:italic;">"Halo, nama saya [nama kamu]. Saya adalah pemilik Sofa Sofi, bengkel produksi kursi berkualitas di [kota]. Kami menyediakan kursi kuliah, kursi lipat, dan sistem manajemen bisnis digital. Kualitas terbaik, harga terjangkau, pengiriman ke seluruh Indonesia. Untuk informasi lebih lanjut, hubungi kami melalui WhatsApp atau kunjungi toko kami."</div>
+            <div style="margin-top:8px;font-size:11px;color:var(--a1);">→ Rekam 3x dengan intonasi berbeda. Total ~2 menit. Gunakan HP dekat mulut di ruangan sepi.</div>
+          </div>
+        </div>
+
+        <div style="background:var(--s2);border:1px solid var(--border);border-radius:var(--r2);padding:12px;">
+          <b style="font-size:12px;color:var(--text);display:block;margin-bottom:8px;">🛠️ Tools yang Dibutuhkan</b>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:11px;">
+            <div style="padding:8px;background:rgba(0,0,0,0.2);border-radius:8px;">
+              <div style="color:var(--a1);font-weight:700;">Veo 3.1 API</div>
+              <div style="color:var(--muted);margin-top:2px;">Kloning wajah di video</div>
+              <div style="color:var(--a3);margin-top:2px;">Rp 6.500/video</div>
+            </div>
+            <div style="padding:8px;background:rgba(0,0,0,0.2);border-radius:8px;">
+              <div style="color:#a78bfa;font-weight:700;">ElevenLabs</div>
+              <div style="color:var(--muted);margin-top:2px;">Kloning suara</div>
+              <div style="color:var(--a5);margin-top:2px;">Free 10k char/bulan</div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <label class="field-label">Voice ID ElevenLabs (setelah clone)</label>
+          <input type="text" id="voiceId" placeholder="Paste Voice ID dari ElevenLabs...">
+        </div>
+        <button class="btn-sec" onclick="saveVoiceId()">💾 Simpan Voice ID</button>
+        <div id="voiceIdStatus" style="display:none;" class="alert alert-success">✓ Voice ID tersimpan</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     AGENT 5 — APPROVAL & POSTING
+============================================================ -->
+<section class="section" id="sec-a5">
+  <div class="sec-head">
+    <div class="sec-title">✅ Agent <span>Approval & Posting</span></div>
+    <div class="sec-sub">Review, scoring, dan approve konten sebelum posting. Kelola jadwal konten.</div>
+  </div>
+
+  <!-- Queue -->
+  <div id="a5Queue">
+    <div class="empty" id="a5Empty">
+      <div class="empty-icon">📭</div>
+      <div>Belum ada konten untuk di-review.<br>Generate konten di Agent 1-4, lalu klik <b>"Kirim ke Approval"</b>.</div>
+    </div>
+  </div>
+
+  <!-- History -->
+  <div class="card" style="margin-top:4px;">
+    <div class="card-head"><span class="ch-icon">📊</span> Riwayat Konten</div>
+    <div class="card-body" style="display:flex;flex-direction:column;gap:8px;" id="a5History">
+      <div class="empty" style="padding:20px;">
+        <div style="font-size:24px;">📂</div>
+        <div style="margin-top:8px;">Belum ada konten yang diapprove.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Jadwal -->
+  <div class="card">
+    <div class="card-head"><span class="ch-icon">📅</span> Rekomendasi Jadwal Posting</div>
+    <div class="card-body" style="display:flex;flex-direction:column;gap:8px;">
+      <div style="display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:center;font-size:12px;color:var(--muted2);">
+        <span style="color:var(--a1);font-weight:700;">Senin</span><span>Edukasi/Tips → Instagram Carousel</span><span style="color:var(--a3);">18.00-20.00</span>
+        <span style="color:var(--a1);font-weight:700;">Rabu</span><span>Demo Produk → TikTok/Reels</span><span style="color:var(--a3);">19.00-21.00</span>
+        <span style="color:var(--a1);font-weight:700;">Jumat</span><span>Promo/Flash Sale → Semua Platform</span><span style="color:var(--a3);">17.00-20.00</span>
+        <span style="color:var(--a1);font-weight:700;">Minggu</span><span>Behind the Scenes → Story + TikTok</span><span style="color:var(--a3);">10.00-12.00</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SETTINGS
+============================================================ -->
+<section class="section" id="sec-settings">
+  <div class="sec-head">
+    <div class="sec-title">⚙️ <span>Settings</span></div>
+    <div class="sec-sub">Konfigurasi API, engine AI, dan info bisnis kamu.</div>
+  </div>
+
+  <!-- Engine -->
+  <div class="card">
+    <div class="card-head"><span class="ch-icon">🤖</span> Engine AI Utama</div>
+    <div class="card-body">
+      <div class="engine-grid">
+        <div class="engine-card gemini on" id="engGemini" onclick="setEngine('gemini')">
+          <div class="engine-emoji">🔵</div>
+          <div class="engine-name" style="color:#4285f4;">Gemini</div>
+          <div class="engine-desc">Gratis generous · Veo video · Imagen foto</div>
+        </div>
+        <div class="engine-card claude" id="engClaude" onclick="setEngine('claude')">
+          <div class="engine-emoji">🟠</div>
+          <div class="engine-name" style="color:var(--a1);">Claude</div>
+          <div class="engine-desc">Teks terbaik · API berbayar</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Gemini Key -->
+  <div class="card" id="geminiKeyCard">
+    <div class="card-head"><span class="ch-icon">🔑</span> Gemini API Key</div>
+    <div class="card-body" style="display:flex;flex-direction:column;gap:8px;">
+      <div style="display:flex;gap:7px;">
+        <input type="password" id="geminiKey" placeholder="AIza..." style="flex:1;">
+        <button class="btn-sec" onclick="saveKey('gemini')">Simpan</button>
+      </div>
+      <div style="font-size:11px;color:var(--muted);">Dapatkan gratis di <code>aistudio.google.com</code> → Get API Key → buat di project baru.</div>
+      <div id="geminiKeyOk" style="display:none;" class="alert alert-success" style="font-size:11px;">✓ Gemini API Key tersimpan</div>
+    </div>
+  </div>
+
+  <!-- Claude Key -->
+  <div class="card" id="claudeKeyCard" style="display:none;">
+    <div class="card-head"><span class="ch-icon">🔑</span> Claude API Key</div>
+    <div class="card-body" style="display:flex;flex-direction:column;gap:8px;">
+      <div style="display:flex;gap:7px;">
+        <input type="password" id="claudeKey" placeholder="sk-ant-..." style="flex:1;">
+        <button class="btn-sec" onclick="saveKey('claude')">Simpan</button>
+      </div>
+      <div id="claudeKeyOk" style="display:none;" class="alert alert-success">✓ Claude API Key tersimpan</div>
+    </div>
+  </div>
+
+  <!-- Brand Info -->
+  <div class="card">
+    <div class="card-head"><span class="ch-icon">🏪</span> Info Bisnis</div>
+    <div class="card-body" style="display:flex;flex-direction:column;gap:9px;">
+      <div><label class="field-label">Nama Brand / Toko</label>
+        <input type="text" id="brandName" placeholder="Sofa Sofi"></div>
+      <div><label class="field-label">Kota / Lokasi</label>
+        <input type="text" id="brandCity" placeholder="Yogyakarta"></div>
+      <div><label class="field-label">Nomor WA / Link</label>
+        <input type="text" id="brandWA" placeholder="08xxxxxxxxxx"></div>
+      <div><label class="field-label">Keunggulan Produk</label>
+        <textarea id="brandUSP" placeholder="Contoh: Harga terjangkau, kualitas premium, tersedia grosir, pengiriman cepat..." style="min-height:56px;"></textarea></div>
+      <button class="btn-primary" onclick="saveBrand()">💾 Simpan Info Bisnis</button>
+      <div id="brandOk" style="display:none;" class="alert alert-success">✓ Info bisnis tersimpan</div>
+    </div>
+  </div>
+
+  <!-- Custom Talent -->
+  <div class="card">
+    <div class="card-head"><span class="ch-icon">👤</span> Karakter Custom (Wajah Saya)</div>
+    <div class="card-body" style="display:flex;flex-direction:column;gap:9px;">
+      <div><label class="field-label">Nama</label>
+        <input type="text" id="customName" placeholder="Nama kamu"></div>
+      <div><label class="field-label">Deskripsi Singkat</label>
+        <textarea id="customDesc" placeholder="Contoh: Pria 35 tahun, kulit sawo matang, rambut pendek, sering pakai kemeja batik..." style="min-height:56px;"></textarea></div>
+      <div><label class="field-label">Kepribadian / Tone</label>
+        <input type="text" id="customTone" placeholder="Ramah, profesional, bicara lugas..."></div>
+      <button class="btn-primary" onclick="saveCustomTalent()">💾 Simpan Karakter Custom</button>
+      <div id="customOk" style="display:none;" class="alert alert-success">✓ Karakter custom tersimpan</div>
+    </div>
+  </div>
+
+  <!-- Info -->
+  <div class="alert alert-info" style="font-size:11px;">🔒 Semua API key dan data tersimpan hanya di browser kamu (localStorage). Tidak dikirim ke server manapun selain API Gemini/Claude langsung saat generate.</div>
+
+  <div class="card">
+    <div class="card-head"><span class="ch-icon">📊</span> Status Sistem</div>
+    <div class="card-body" style="display:flex;flex-direction:column;gap:7px;font-size:12px;" id="systemStatus">
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ============================================================
+     JAVASCRIPT
+============================================================ -->
+<script>
+// ═══════════════════════════════════════════════
+// STATE & CONSTANTS
+// ═══════════════════════════════════════════════
+const TALENTS = {
+  sari: { name:'Sari Pratiwi', age:24, city:'Yogyakarta', vibe:'Ceria, Gen-Z, relate kampus', tone:'Santai, sering pakai "guys", "literally", "beneran"', icon:'👩‍🎓' },
+  budi: { name:'Budi Santoso', age:36, city:'Jakarta', vibe:'Profesional, terpercaya, pengambil keputusan', tone:'Lugas, profesional, data-driven', icon:'👨‍💼' },
+  nina: { name:'Nina Creative', age:27, city:'Bandung', vibe:'Content creator, aesthetic, UMKM enthusiast', tone:'Inspiratif, relatable, suka sharing tips', icon:'✨' },
+};
+
+let approvalQueue = [];
+let approvedHistory = [];
+let engine = 'gemini';
+
+// ═══════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+  loadAll();
+  updateStatus();
+  if(window.Telegram?.WebApp){ window.Telegram.WebApp.ready(); window.Telegram.WebApp.expand(); }
+});
+
+function loadAll(){
+  const gk = ls('ss_gemini_key'); const ck = ls('ss_claude_key');
+  if(gk){ document.getElementById('geminiKey').value=gk; document.getElementById('geminiKeyOk').style.display='block'; }
+  if(ck){ document.getElementById('claudeKey').value=ck; document.getElementById('claudeKeyOk').style.display='block'; }
+  engine = ls('ss_engine')||'gemini';
+  setEngine(engine, true);
+  ['brandName','brandCity','brandWA','brandUSP','customName','customDesc','customTone','voiceId'].forEach(k=>{
+    const v=ls('ss_'+k); const el=document.getElementById(k); if(v&&el) el.value=v;
+  });
+  approvalQueue = JSON.parse(ls('ss_queue')||'[]');
+  approvedHistory = JSON.parse(ls('ss_history')||'[]');
+  renderApproval();
+  renderHistory();
+}
+
+function ls(k,v){ if(v!==undefined){ localStorage.setItem(k,v); return v; } return localStorage.getItem(k); }
+
+// ═══════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════
+function goTab(id, btn){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('sec-'+id).classList.add('active');
+  if(btn) btn.classList.add('active');
+  if(id==='settings') renderSystemStatus();
+}
+function goSettings(){ goTab('settings', null); document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active')); }
+
+// ═══════════════════════════════════════════════
+// CHIP SELECTION
+// ═══════════════════════════════════════════════
+function pickChip(el, groupId){
+  const g=document.getElementById(groupId)||el.closest('.chip-row');
+  const parent = groupId ? document.getElementById(groupId) : el.closest('.chip-row');
+  parent.querySelectorAll('.chip').forEach(c=>{
+    c.classList.remove('on','c-gold','c-rose','c-teal','c-violet','c-green');
+  });
+  el.classList.add('on');
+  // assign color based on group
+  const colorMap = {
+    cpPlatform:'c-rose', cpGaya:'c-gold', cpMode:'c-gold', cpPhotoMode:'c-teal',
+    cpBG:'c-rose', cpAngle:'c-violet', cpRatio:'c-teal', cpVideoEngine:'c-gold',
+    cpDur:'c-rose', cpAudio:'c-violet', cpA4Mode:'c-violet', cpScriptTalent:'c-rose'
+  };
+  el.classList.add(colorMap[groupId]||'c-gold');
+}
+
+function pickTalent(el, groupId){
+  const parent = document.getElementById(groupId);
+  parent.querySelectorAll('.chip').forEach(c=>c.classList.remove('on','c-gold','c-rose','c-teal','c-violet','c-green'));
+  el.classList.add('on','c-violet');
+  const tv = el.dataset.val;
+  // find preview
+  const previewMap = {cpTalent1:'tp1',cpTalent2:'tp2',cpTalent3:'tp3'};
+  const pvId = previewMap[groupId];
+  if(!pvId) return;
+  const pv = document.getElementById(pvId);
+  if(tv==='none'||!tv){ pv.classList.remove('show'); return; }
+  if(tv==='custom'){
+    const cn=ls('ss_customName')||'Karakter Custom';
+    const cd=ls('ss_customDesc')||'Deskripsi belum diisi';
+    pv.innerHTML=`<b style="color:var(--text)">👤 ${cn}</b> · ${cd}`;
+    pv.classList.add('show'); return;
+  }
+  const t=TALENTS[tv];
+  if(t){ pv.innerHTML=`<b style="color:var(--text)">${t.icon} ${t.name}</b> · ${t.age}th · ${t.city} · ${t.vibe}`; pv.classList.add('show'); }
+}
+
+// ═══════════════════════════════════════════════
+// GET SELECTED VALUE
+// ═══════════════════════════════════════════════
+function getChip(groupId){
+  const sel = document.querySelector(`#${groupId} .chip.on`);
+  return sel ? sel.dataset.val||sel.textContent.trim() : '';
+}
+
+// ═══════════════════════════════════════════════
+// BUILD SYSTEM PROMPT
+// ═══════════════════════════════════════════════
+function buildSystemPrompt(){
+  const brand = ls('ss_brandName')||'Sofa Sofi';
+  const city  = ls('ss_brandCity')||'Indonesia';
+  const wa    = ls('ss_brandWA')||'';
+  const usp   = ls('ss_brandUSP')||'Harga terjangkau, kualitas terpercaya';
+  return `Kamu adalah Content AI Agent untuk brand "${brand}" — bengkel produksi dan jual kursi di ${city}, Indonesia.
+Produk: Kursi Kuliah (Baru/Original/Seken), Kursi Lipat, dan produk digital "Sofa Sofi System" (manajemen bisnis via Google Sheets + Telegram Bot).
+Keunggulan: ${usp}
+Kontak/WA: ${wa}
+Target pasar: Mahasiswa, kampus/universitas, kantor, UMKM, ibu rumah tangga.
+Kamu menghasilkan konten pemasaran berkualitas tinggi, kreatif, dan relevan untuk pasar Indonesia. Selalu dalam Bahasa Indonesia yang natural dan engaging.`;
+}
+
+function buildTalentContext(talentVal){
+  if(!talentVal||talentVal==='none') return '';
+  if(talentVal==='custom'){
+    const n=ls('ss_customName')||'Talent Custom';
+    const d=ls('ss_customDesc')||'';
+    const t=ls('ss_customTone')||'Ramah, profesional';
+    return `\n\nGunakan talent bernama "${n}". Deskripsi: ${d}. Tone: ${t}.`;
+  }
+  const t=TALENTS[talentVal];
+  if(!t) return '';
+  return `\n\nGunakan AI Talent bernama "${t.name}" (${t.age} tahun, ${t.city}) sebagai pembawa konten. Karakter: ${t.vibe}. Cara bicara: ${t.tone}.`;
+}
+
+// ═══════════════════════════════════════════════
+// GEMINI API CALL
+// ═══════════════════════════════════════════════
+async function callGemini(systemPrompt, userPrompt){
+  const key = ls('ss_gemini_key');
+  if(!key) throw new Error('API Key Gemini belum diisi! Masuk ke Settings dan isi API Key terlebih dahulu.');
+  const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${key}`,{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      system_instruction:{parts:[{text:systemPrompt}]},
+      contents:[{parts:[{text:userPrompt}]}],
+      generationConfig:{temperature:0.85, maxOutputTokens:1800}
+    })
+  });
+  const d=await res.json();
+  if(d.error) throw new Error(d.error.message);
+  return d.candidates?.[0]?.content?.parts?.[0]?.text||'Tidak ada respons.';
+}
+
+async function callClaude(systemPrompt, userPrompt){
+  const key = ls('ss_claude_key');
+  if(!key) throw new Error('API Key Claude belum diisi! Masuk ke Settings.');
+  const res = await fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01'},
+    body:JSON.stringify({
+      model:'claude-sonnet-4-20250514',max_tokens:1800,
+      system:systemPrompt,
+      messages:[{role:'user',content:userPrompt}]
+    })
+  });
+  const d=await res.json();
+  if(d.error) throw new Error(d.error.message);
+  return d.content?.map(b=>b.text||'').join('')||'Tidak ada respons.';
+}
+
+async function callAI(sys, usr){
+  return engine==='claude' ? callClaude(sys,usr) : callGemini(sys,usr);
+}
+
+// ═══════════════════════════════════════════════
+// AGENT 1 — IDE & NASKAH
+// ═══════════════════════════════════════════════
+async function runAgent1(){
+  const btn=document.getElementById('btnA1');
+  const platform = getChip('cpPlatform') || 'Instagram';
+  const product  = document.getElementById('a1Product').value;
+  const type     = document.getElementById('a1Type').value;
+  const gaya     = getChip('cpGaya') || 'Santai & Gen-Z';
+  const mode     = getChip('cpMode') || 'full';
+  const talent   = getChip('cpTalent1') || 'none';
+  const notes    = document.getElementById('a1Notes').value;
+
+  setPipeState('p1s1','active');
+  setBtn(btn,true,'⏳ Riset & Generate...');
+
+  const modeInstructions = {
+    full: `Buat konten LENGKAP yang terdiri dari:
+🎣 HOOK (3-5 detik pertama — wajib stop-scroll)
+📝 SCRIPT / BODY KONTEN (sesuai platform dan durasi ideal)
+💬 CAPTION (dengan emoji, siap copy-paste)
+#️⃣ HASHTAG (20-25 untuk IG/TikTok, mix besar+niche+brand)
+📣 CTA (Call to Action yang kuat dan spesifik)
+🎬 TIPS PRODUKSI (tips teknis pengambilan foto/video untuk konten ini)`,
+    ideas: `Berikan 3 IDE KONTEN BERBEDA untuk topik ini. Format setiap ide:
+💡 IDE [nomor]: [judul ide]
+🎯 Angle: [pendekatan unik]
+🎣 Hook: [kalimat pembuka]
+📱 Format ideal: [durasi, format]`,
+    caption: `Buat CAPTION + HASHTAG yang sangat engaging:
+💬 CAPTION UTAMA (dengan emoji, max 150 kata, ada storytelling)
+🔥 CAPTION PENDEK (untuk TikTok/Stories, max 50 kata)
+#️⃣ HASHTAG SET 1 - Besar (1M+): 5 hashtag
+#️⃣ HASHTAG SET 2 - Menengah (100K-1M): 10 hashtag
+#️⃣ HASHTAG SET 3 - Niche (<100K): 8 hashtag
+📣 CTA: 3 variasi CTA berbeda`,
+    storyboard: `Buat STORYBOARD VIDEO LENGKAP:
+📋 OVERVIEW: durasi total, format, mood
+Untuk setiap SCENE (minimal 4 scene), tulis:
+🎬 SCENE [N] ([timestamp])
+📐 Shot type: [close-up/medium/wide]
+🎭 Action: [apa yang terjadi]
+🗣️ Narasi/Dialog: [teks]
+🎨 Visual notes: [lighting, warna, mood]
+🔊 Audio: [musik/SFX/voiceover]
+📋 PROMPT KLING/VEO: [prompt siap pakai untuk generate video scene ini]`
+  };
+
+  const sys = buildSystemPrompt();
+  const usr = `Platform: ${platform} | Produk: ${product} | Tipe: ${type} | Gaya: ${gaya}
+${buildTalentContext(talent)}
+${notes ? `Brief tambahan: ${notes}` : ''}
+
+${modeInstructions[mode]}`;
+
+  try {
+    setPipeState('p1s1','done'); setPipeState('p1s2','active');
+    const result = await callAI(sys, usr);
+    setPipeState('p1s2','done'); setPipeState('p1s3','done'); setPipeState('p1s4','done');
+
+    document.getElementById('a1Content').textContent = result;
+    document.getElementById('a1Tag').textContent = `✅ ${platform} — ${type}`;
+    document.getElementById('a1Result').style.display='block';
+    document.getElementById('a1Result').scrollIntoView({behavior:'smooth',block:'start'});
+
+    // Store for approval
+    window._lastA1 = { platform, product, type, content: result, ts: new Date().toLocaleString('id-ID') };
+    showToast('✅ Konten berhasil di-generate!');
+  } catch(e){
+    document.getElementById('a1Content').textContent = '⚠️ Error: '+e.message;
+    document.getElementById('a1Result').style.display='block';
+    showToast('❌ '+e.message);
+  }
+  setBtn(btn,false,'🚀 Generate Konten Sekarang');
+  resetPipe();
+}
+
+// ═══════════════════════════════════════════════
+// AGENT 2 — FOTO
+// ═══════════════════════════════════════════════
+async function runAgent2(){
+  const btn=document.getElementById('btnA2');
+  const product = document.getElementById('a2Product').value;
+  const color   = document.getElementById('a2Color').value;
+  const bg      = getChip('cpBG');
+  const talent  = getChip('cpTalent2');
+  const angle   = getChip('cpAngle');
+  const ratio   = getChip('cpRatio');
+
+  setBtn(btn,true,'⏳ Generate Prompt Foto...');
+
+  const talentCtx = talent && talent!=='none' ? (() => {
+    if(talent==='custom'){
+      const n=ls('ss_customName')||'seseorang'; const d=ls('ss_customDesc')||'';
+      return `dengan talent bernama ${n} (${d}) yang sedang menggunakan/berinteraksi dengan kursi tersebut`;
+    }
+    const t=TALENTS[talent];
+    return t ? `dengan AI talent ${t.name} (${t.icon} ${t.age} tahun, ${t.vibe}) yang sedang menggunakan/berinteraksi dengan kursi tersebut` : '';
+  })() : 'tanpa orang (product-only shot)';
+
+  const angles = angle==='auto3'
+    ? ['close-up detail texture dan material kursi','medium shot menunjukkan bentuk keseluruhan kursi dari sudut 45 derajat','lifestyle wide shot suasana keseluruhan']
+    : [angle==='closeup'?'close-up detail':'',angle==='medium'?'medium shot':'',angle==='lifestyle'?'lifestyle wide shot':''].filter(Boolean);
+
+  const sys = buildSystemPrompt();
+  const usr = `Generate ${angle==='auto3'?'3 prompt foto dengan 3 angle berbeda':'prompt foto'} untuk:
+Produk: ${product} warna ${color}
+Setting/Background: ${bg}
+Talent: ${talentCtx}
+Rasio: ${ratio}
+
+Untuk setiap prompt, format sebagai:
+
+📸 PROMPT [N] — [nama angle]
+[Prompt lengkap siap paste ke Midjourney atau Gemini Imagen]
+
+KLING ANIMATE PROMPT [N]:
+[Prompt singkat untuk menganimasi foto ini menjadi video 5-8 detik di Kling AI]
+
+Buat prompt dalam Bahasa Inggris (untuk tools generate gambar), detail dan spesifik. Include: lighting, mood, camera angle, style (photorealistic), aspect ratio. Untuk Midjourney tambahkan parameter --ar ${ratio.replace(':','_')} --style raw --v 6.1 di akhir.`;
+
+  try {
+    const result = await callAI(sys,usr);
+    document.getElementById('a2Content').textContent = result;
+    document.getElementById('a2Result').style.display='block';
+    document.getElementById('a2Result').scrollIntoView({behavior:'smooth',block:'start'});
+    window._lastA2 = { product, content: result, ts: new Date().toLocaleString('id-ID') };
+    showToast('✅ 3 prompt foto siap!');
+  } catch(e){
+    document.getElementById('a2Content').textContent = '⚠️ Error: '+e.message;
+    document.getElementById('a2Result').style.display='block';
+    showToast('❌ '+e.message);
+  }
+  setBtn(btn,false,'🖼️ Generate 3 Prompt Foto');
+}
+
+// ═══════════════════════════════════════════════
+// AGENT 3 — VIDEO
+// ═══════════════════════════════════════════════
+async function runAgent3(){
+  const btn=document.getElementById('btnA3');
+  const product  = document.getElementById('a3Product').value;
+  const platform = document.getElementById('a3Platform').value;
+  const talent   = getChip('cpTalent3');
+  const setting  = document.getElementById('a3Setting').value;
+  const mood     = document.getElementById('a3Mood').value;
+  const dur      = getChip('cpDur') || '8';
+  const audio    = getChip('cpAudio') || 'native';
+  const vidEng   = getChip('cpVideoEngine') || 'veo';
+  const notes    = document.getElementById('a3Notes').value;
+
+  setBtn(btn,true,'⏳ Generate Video Prompt...');
+
+  const clips = Math.ceil(parseInt(dur)/8);
+  const talentCtx = buildTalentContext(talent);
+  const audioCtx = {
+    native:'Native audio Veo — suara ambient, sound effect, dan dialog otomatis di-generate bersamaan dengan video',
+    elevenlabs:'Voiceover akan di-generate terpisah dengan ElevenLabs. Sertakan script voiceover untuk setiap scene.',
+    music:'Background music saja, tidak ada dialog',
+    silent:'Video tanpa audio'
+  }[audio];
+
+  const sys = buildSystemPrompt();
+  const usr = `Buat MULTI-SHOT VIDEO PROMPT untuk platform ${platform}.
+
+Produk: ${product}
+Setting: ${setting}  
+Mood: ${mood}
+Durasi total: ${dur} detik (${clips} clip x 8 detik)
+Audio: ${audioCtx}
+Engine: ${vidEng==='veo'?'Google Veo 3.1':'Kling AI O1'}
+${talentCtx}
+${notes?`Brief: ${notes}`:''}
+
+Format output:
+
+🎬 VIDEO BRIEF
+Platform: | Durasi: | Mood: | Rasio:
+
+${Array.from({length:clips},(_,i)=>`🎥 CLIP ${i+1} (${i*8}s - ${(i+1)*8}s)
+Shot type: 
+Action/Visual:
+${audio==='elevenlabs'?'Voiceover script:\n':''}Mood/Lighting:
+Audio notes:
+
+${vidEng==='veo'?'VEO 3.1 PROMPT:':'KLING O1 PROMPT:'}
+[Prompt lengkap dalam Bahasa Inggris, detail, siap paste]`).join('\n\n')}
+
+📱 CAPTION PENDEK (untuk caption video di platform):
+[Caption 1-2 kalimat + emoji]`;
+
+  try {
+    const result = await callAI(sys,usr);
+    document.getElementById('a3Content').textContent = result;
+    document.getElementById('a3Result').style.display='block';
+    document.getElementById('a3Result').scrollIntoView({behavior:'smooth',block:'start'});
+    window._lastA3 = { product, platform, content: result, ts: new Date().toLocaleString('id-ID') };
+    showToast('✅ Video prompt siap! Estimasi biaya: Rp '+(parseInt(dur)/8*6500).toLocaleString('id-ID'));
+  } catch(e){
+    document.getElementById('a3Content').textContent = '⚠️ Error: '+e.message;
+    document.getElementById('a3Result').style.display='block';
+    showToast('❌ '+e.message);
+  }
+  setBtn(btn,false,'🎬 Generate Multi-Shot Video Prompt');
+}
+
+// ═══════════════════════════════════════════════
+// AGENT 4 — SCRIPT PER KARAKTER
+// ═══════════════════════════════════════════════
+function showA4Mode(mode){
+  ['library','script','clone'].forEach(m=>{
+    const el=document.getElementById('a4Mode'+m.charAt(0).toUpperCase()+m.slice(1));
+    if(el) el.style.display = m===mode?'flex':'none';
+    if(el&&m===mode) el.style.flexDirection='column', el.style.gap='12px';
+  });
+}
+
+async function runAgent4Script(){
+  const btn=document.getElementById('btnA4Script');
+  const talent   = getChip('cpScriptTalent') || 'sari';
+  const platform = document.getElementById('a4Platform').value;
+  const brief    = document.getElementById('a4ScriptBrief').value;
+
+  setBtn(btn,true,'⏳ Generate Script...');
+
+  const t = TALENTS[talent] || { name:ls('ss_customName')||'Custom', vibe:ls('ss_customDesc')||'', tone:ls('ss_customTone')||'ramah' };
+  const sys = buildSystemPrompt();
+  const usr = `Generate script lengkap untuk AI Talent ${t.name} (${t.icon||'👤'}).
+
+Karakter: ${t.vibe||''}
+Cara bicara: ${t.tone||''}
+Platform: ${platform}
+Brief: ${brief||'Promosi produk utama'}
+
+Format output:
+🎭 KARAKTER: ${t.name}
+📱 PLATFORM: ${platform}
+
+🎣 HOOK (0-3 detik):
+[kalimat pembuka dalam suara karakter]
+
+📝 BODY SCRIPT:
+[Script lengkap dengan stage direction dalam kurung, misalnya (senyum ke kamera), (pegang kursi), dsb]
+
+💬 PENUTUP + CTA:
+[closing dan call to action]
+
+📊 DELIVERY NOTES:
+- Intonasi: 
+- Tempo: 
+- Ekspresi kunci:
+- Props yang dibutuhkan:`;
+
+  try {
+    const result = await callAI(sys,usr);
+    document.getElementById('a4ScriptContent').textContent = result;
+    document.getElementById('a4ScriptResult').style.display='block';
+    window._lastA4 = { talent:t.name, platform, content: result, ts: new Date().toLocaleString('id-ID') };
+    showToast('✅ Script karakter siap!');
+  } catch(e){
+    document.getElementById('a4ScriptContent').textContent = '⚠️ Error: '+e.message;
+    document.getElementById('a4ScriptResult').style.display='block';
+    showToast('❌ '+e.message);
+  }
+  setBtn(btn,false,'✍️ Generate Script Karakter');
+}
+
+// ═══════════════════════════════════════════════
+// AGENT 5 — APPROVAL
+// ═══════════════════════════════════════════════
+function sendToApproval(source){
+  const dataMap = {
+    a1: window._lastA1,
+    a3: window._lastA3,
+    a4: window._lastA4,
+  };
+  const data = dataMap[source];
+  if(!data||!data.content){ showToast('⚠️ Generate konten dulu!'); return; }
+
+  const icons = {a1:'💡',a3:'🎬',a4:'✨'};
+  const labels = {a1:'Naskah/Konten',a3:'Video Prompt',a4:'Script Talent'};
+
+  approvalQueue.unshift({
+    id: Date.now(),
+    source, icon: icons[source]||'📄',
+    label: labels[source]||'Konten',
+    platform: data.platform||'—',
+    product: data.product||'—',
+    talent: data.talent||'—',
+    content: data.content,
+    ts: data.ts,
+    score: calcScore(data.content)
+  });
+  ls('ss_queue', JSON.stringify(approvalQueue));
+  renderApproval();
+  showToast('📤 Dikirim ke Approval!');
+}
+
+function calcScore(content){
+  let score=60;
+  if(content.includes('HOOK')||content.includes('hook')) score+=8;
+  if(content.includes('#')) score+=7;
+  if(content.includes('CTA')||content.includes('WhatsApp')||content.includes('WA')) score+=8;
+  if(content.length>500) score+=7;
+  if(content.includes('📸')||content.includes('🎬')||content.includes('💬')) score+=5;
+  if(content.includes('Sofa Sofi')||content.includes('kursi')) score+=5;
+  return Math.min(score,100);
+}
+
+function renderApproval(){
+  const container=document.getElementById('a5Queue');
+  document.getElementById('a5Empty').style.display = approvalQueue.length?'none':'block';
+  // Remove old items
+  container.querySelectorAll('.approval-item').forEach(e=>e.remove());
+
+  approvalQueue.forEach(item=>{
+    const score=item.score||75;
+    const scoreColor = score>=80?'var(--a5)':score>=60?'var(--a1)':'var(--a2)';
+    const div=document.createElement('div');
+    div.className='approval-item';
+    div.innerHTML=`
+      <div class="approval-head">
+        <div>
+          <div style="font-size:13px;font-weight:700;">${item.icon} ${item.label}</div>
+          <div class="approval-meta">${item.product||'—'} · ${item.ts}</div>
+        </div>
+        <div class="approval-platform">${item.platform||'—'}</div>
+      </div>
+      <div class="approval-content">${item.content.substring(0,300)}...</div>
+      <div style="padding:8px 14px 0;">
+        <div class="score-bar-wrap">
+          <div class="score-label"><span>Quality Score</span><span style="color:${scoreColor};font-weight:700;">${score}/100</span></div>
+          <div class="score-track"><div class="score-fill" style="width:${score}%;background:${scoreColor};"></div></div>
+        </div>
+      </div>
+      <div class="approval-actions">
+        <button class="btn-approve" onclick="approveItem(${item.id})">✅ Approve</button>
+        <button class="btn-revise" onclick="reviseItem(${item.id})">✏️ Revisi</button>
+        <button class="btn-reject" onclick="rejectItem(${item.id})">❌</button>
+      </div>`;
+    container.appendChild(div);
+  });
+}
+
+function approveItem(id){
+  const idx=approvalQueue.findIndex(i=>i.id===id);
+  if(idx===-1) return;
+  const item=approvalQueue.splice(idx,1)[0];
+  item.status='approved'; item.approvedAt=new Date().toLocaleString('id-ID');
+  approvedHistory.unshift(item);
+  ls('ss_queue',JSON.stringify(approvalQueue));
+  ls('ss_history',JSON.stringify(approvedHistory));
+  renderApproval(); renderHistory();
+  showToast('✅ Konten diapprove!');
+}
+
+function rejectItem(id){
+  approvalQueue=approvalQueue.filter(i=>i.id!==id);
+  ls('ss_queue',JSON.stringify(approvalQueue));
+  renderApproval(); showToast('❌ Konten ditolak');
+}
+
+function reviseItem(id){
+  const item=approvalQueue.find(i=>i.id===id);
+  if(!item) return;
+  showToast('✏️ Kembali ke Agent '+item.source.toUpperCase()+' untuk revisi');
+  // Navigate to source agent
+  const tabMap={a1:'nb1',a3:'nb3',a4:'nb4'};
+  const nb=tabMap[item.source];
+  if(nb){ const btn=document.getElementById(nb); if(btn) goTab(item.source,btn); }
+}
+
+function renderHistory(){
+  const container=document.getElementById('a5History');
+  container.innerHTML='';
+  if(!approvedHistory.length){
+    container.innerHTML='<div class="empty" style="padding:20px;"><div style="font-size:24px;">📂</div><div style="margin-top:8px;">Belum ada konten yang diapprove.</div></div>';
+    return;
+  }
+  approvedHistory.slice(0,10).forEach(item=>{
+    const div=document.createElement('div');
+    div.className='history-item';
+    div.innerHTML=`
+      <div class="h-icon">${item.icon}</div>
+      <div style="flex:1;">
+        <div class="h-title">${item.label} — ${item.product||'—'}</div>
+        <div class="h-meta">${item.platform||'—'} · ${item.approvedAt||item.ts}</div>
+      </div>
+      <div class="h-badge">✓ Approved</div>`;
+    container.appendChild(div);
+  });
+}
+
+// ═══════════════════════════════════════════════
+// SETTINGS ACTIONS
+// ═══════════════════════════════════════════════
+function setEngine(eng, silent){
+  engine=eng; ls('ss_engine',eng);
+  document.getElementById('engGemini').classList.toggle('on',eng==='gemini');
+  document.getElementById('engClaude').classList.toggle('on',eng==='claude');
+  document.getElementById('geminiKeyCard').style.display=eng==='gemini'?'block':'none';
+  document.getElementById('claudeKeyCard').style.display=eng==='claude'?'block':'none';
+  if(!silent) showToast('Engine: '+(eng==='gemini'?'Gemini':'Claude'));
+}
+
+function saveKey(type){
+  const val=document.getElementById(type+'Key').value.trim();
+  if(!val){ showToast('⚠️ API Key kosong!'); return; }
+  ls('ss_'+type+'_key',val);
+  document.getElementById(type+'KeyOk').style.display='block';
+  updateStatus(); showToast('✅ API Key tersimpan!');
+}
+
+function saveBrand(){
+  ['brandName','brandCity','brandWA','brandUSP'].forEach(k=>{
+    const el=document.getElementById(k); if(el) ls('ss_'+k,el.value);
+  });
+  document.getElementById('brandOk').style.display='block';
+  showToast('✅ Info bisnis tersimpan!');
+}
+
+function saveCustomTalent(){
+  ['customName','customDesc','customTone'].forEach(k=>{
+    const el=document.getElementById(k); if(el) ls('ss_'+k,el.value);
+  });
+  document.getElementById('customOk').style.display='block';
+  showToast('✅ Karakter custom tersimpan!');
+}
+
+function saveVoiceId(){
+  const v=document.getElementById('voiceId').value.trim();
+  if(!v){ showToast('⚠️ Voice ID kosong!'); return; }
+  ls('ss_voiceId',v);
+  document.getElementById('voiceIdStatus').style.display='block';
+  showToast('✅ Voice ID tersimpan!');
+}
+
+function renderSystemStatus(){
+  const el=document.getElementById('systemStatus'); if(!el) return;
+  const checks=[
+    {label:'Gemini API Key', ok:!!ls('ss_gemini_key'), note:!ls('ss_gemini_key')?'Belum diisi':'Aktif'},
+    {label:'Claude API Key', ok:!!ls('ss_claude_key'), note:!ls('ss_claude_key')?'Opsional':'Aktif'},
+    {label:'Info Bisnis', ok:!!ls('ss_brandName'), note:!ls('ss_brandName')?'Belum diisi':'Tersimpan'},
+    {label:'Karakter Custom', ok:!!ls('ss_customName'), note:!ls('ss_customName')?'Opsional':'Tersimpan'},
+    {label:'Voice ID', ok:!!ls('ss_voiceId'), note:!ls('ss_voiceId')?'Opsional':'Tersimpan'},
+    {label:'Engine Aktif', ok:true, note:engine==='gemini'?'Gemini':'Claude'},
+  ];
+  el.innerHTML=checks.map(c=>`
+    <div style="display:flex;align-items:center;justify-content:space-between;">
+      <span style="color:var(--muted2);">${c.label}</span>
+      <span style="color:${c.ok?'var(--a5)':'var(--a2)'};font-weight:700;font-size:11px;">${c.ok?'✓':c.note==='Opsional'?'—':'⚠️'} ${c.note}</span>
+    </div>`).join('');
+}
+
+function updateStatus(){
+  const hasKey=!!(ls('ss_gemini_key')||ls('ss_claude_key'));
+  document.getElementById('statusDot').classList.toggle('active',hasKey);
+  document.getElementById('statusTxt').textContent=hasKey?'Siap':'Setup';
+}
+
+// ═══════════════════════════════════════════════
+// UTILS
+// ═══════════════════════════════════════════════
+function setBtn(btn,dis,txt){
+  btn.disabled=dis;
+  btn.innerHTML=dis?`<span class="spinner"></span>${txt}`:txt;
+}
+
+function copyResult(contentId, btnId){
+  const txt=document.getElementById(contentId).textContent;
+  navigator.clipboard.writeText(txt).then(()=>{
+    const btn=document.getElementById(btnId);
+    if(btn){ const orig=btn.textContent; btn.textContent='✓ Tersalin!'; setTimeout(()=>btn.textContent=orig,2000); }
+    showToast('✅ Tersalin ke clipboard!');
+  });
+}
+
+function copyMini(btn){
+  const txt=btn.previousSibling?.textContent?.trim()||btn.parentElement.textContent.replace(btn.textContent,'').trim();
+  navigator.clipboard.writeText(txt).then(()=>{
+    const orig=btn.textContent; btn.textContent='✓'; setTimeout(()=>btn.textContent=orig,1500);
+  });
+}
+
+function setPipeState(id,state){
+  const el=document.getElementById(id); if(!el) return;
+  el.classList.remove('done','active');
+  if(state) el.classList.add(state);
+}
+
+function resetPipe(){
+  ['p1s1','p1s2','p1s3','p1s4'].forEach(id=>setPipeState(id,''));
+}
+
+let toastTimer;
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.classList.remove('show'),2500);
+}
+
+// Telegram
+if(window.Telegram?.WebApp){
+  window.Telegram.WebApp.ready();
+  window.Telegram.WebApp.expand();
+}
+</script>
+</body>
+</html>
